@@ -4,10 +4,12 @@
 
 ## Tasks
 
-- [ ] add sign-ups w/ google
+- [x] add sign-ups w/ google
 - [ ] add material page and chat page
 - [ ] review the project
 - [ ] make it responsive on mobile
+- [ ] change the theme
+- [ ]
 - [ ]
 - [ ]
 

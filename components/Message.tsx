@@ -34,11 +34,13 @@ export default function Message({ message }: { message: Imessage }) {
             <h1 className="text-sm text-gray-400">
               {new Date(message.created_at).toDateString()}
             </h1>
-            {message.is_edit && (
-              <h1 className="text-sm text-gray-400">edited</h1>
-            )}
+            <h1 className="text-sm text-gray-400">edited</h1>
+            {/* {message.is_edit && ( */}
+            {/* <h1 className="text-sm text-gray-400">edited</h1> */}
+            {/* )} */}
           </div>
-          {message.users?.id === user?.id && <MessageMenu message={message} />}
+          {/* {message.users?.id === user?.id && <MessageMenu message={message} />} */}
+          <MessageMenu message={message} />
         </div>
         <p className="text-gray-300">{message.text}</p>
       </div>

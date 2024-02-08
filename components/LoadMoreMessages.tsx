@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { supabaseBrowser } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { LIMIT_MESSAGE } from "@/lib/constant";
 import { getFromAndTo } from "@/lib/utils";
 import { useMessage } from "@/lib/store/messages";
@@ -14,7 +14,7 @@ export default function LoadMoreMessages() {
   const fetchMore = async () => {
     const { from, to } = getFromAndTo(page, LIMIT_MESSAGE);
 
-    const supabase = supabaseBrowser();
+    const supabase = createClient();
 
     const { data, error } = await supabase
       .from("messages")

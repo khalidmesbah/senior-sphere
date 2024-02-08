@@ -1,11 +1,12 @@
 "use client";
+
 import { useUser } from "@/lib/store/user";
-import { supabaseBrowser } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import React, { useEffect, useState } from "react";
 
 export default function ChatPresence() {
   const user = useUser((state) => state.user);
-  const supabase = supabaseBrowser();
+  const supabase = createClient();
   const [onlineUsers, setOnlineUsers] = useState(0);
 
   useEffect(() => {

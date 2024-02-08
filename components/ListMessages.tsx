@@ -3,7 +3,7 @@ import { Imessage, useMessage } from "@/lib/store/messages";
 import React, { useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import { DeleteAlert, EditAlert } from "./MessasgeActions";
-import { supabaseBrowser } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { ArrowDown } from "lucide-react";
 import LoadMoreMessages from "./LoadMoreMessages";
@@ -21,7 +21,7 @@ export default function ListMessages() {
     optimisticUpdateMessage,
   } = useMessage((state) => state);
 
-  const supabase = supabaseBrowser();
+  const supabase = createClient();
 
   useEffect(() => {
     const channel = supabase

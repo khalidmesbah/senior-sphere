@@ -1,11 +1,13 @@
 import React, { Suspense } from "react";
 import ListMessages from "./ListMessages";
-import { supabaseServer } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/server";
 import InitMessages from "@/lib/store/InitMessages";
 import { LIMIT_MESSAGE } from "@/lib/constant";
+import { cookies } from "next/headers";
 
 export default async function ChatMessages() {
-  const supabase = supabaseServer();
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
 
   const { data } = await supabase
     .from("messages")

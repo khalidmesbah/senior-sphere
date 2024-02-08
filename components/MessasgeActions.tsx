@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Imessage, useMessage } from "@/lib/store/messages";
-import { supabaseBrowser } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
 import {
@@ -34,7 +34,7 @@ export function DeleteAlert() {
     (state) => state.optimisticDeleteMessage,
   );
   const handleDeleteMessage = async () => {
-    const supabase = supabaseBrowser();
+    const supabase = createClient();
     optimisticDeleteMessage(actionMessage?.id!);
 
     const { error } = await supabase
@@ -82,7 +82,7 @@ export function EditAlert() {
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
   const handleEdit = async () => {
-    const supabase = supabaseBrowser();
+    const supabase = createClient();
     const text = inputRef.current.value.trim();
     if (text) {
       optimisticUpdateMessage({

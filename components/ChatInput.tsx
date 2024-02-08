@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+
 import { Input } from "./ui/input";
-import { supabaseBrowser } from "@/lib/supabase/browser";
+import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@/lib/store/user";
@@ -11,7 +11,7 @@ export default function ChatInput() {
   const user = useUser((state) => state.user);
   const addMessage = useMessage((state) => state.addMessage);
   const setOptimisticIds = useMessage((state) => state.setOptimisticIds);
-  const supabase = supabaseBrowser();
+  const supabase = createClient();
   const handleSendMessage = async (text: string) => {
     if (text.trim()) {
       const id = uuidv4();

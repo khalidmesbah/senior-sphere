@@ -7,8 +7,9 @@ const nextConfig = {
         protocol: "https",
       },
       { hostname: "lh3.googleusercontent.com" },
+      { hostname: "gravatar.com" },
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

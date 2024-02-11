@@ -1,6 +1,5 @@
 import { Imessage, useMessage } from "@/lib/store/messages";
 import React from "react";
-import Image from "next/image";
 
 import {
   DropdownMenu,
@@ -12,19 +11,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useUser } from "@/lib/store/user";
+import { Avatar } from "@nextui-org/react";
 
 export default function Message({ message }: { message: Imessage }) {
   const user = useUser((state) => state.user);
+  console.log(message, "from message");
 
   return (
     <div className="flex gap-2">
       <div>
-        <Image
-          src={message.users?.avatar_url!}
-          alt={message.users?.display_name!}
-          width={40}
-          height={40}
-          className=" rounded-full ring-2"
+        <Avatar
+          isBordered
+          className="transition-transform"
+          color="secondary"
+          size="sm"
+          src={message.users?.avatar_url || ""}
+          alt={message.users?.display_name! || "anonymous"}
         />
       </div>
       <div className="flex-1">
@@ -34,13 +36,13 @@ export default function Message({ message }: { message: Imessage }) {
             <h1 className="text-sm text-gray-400">
               {new Date(message.created_at).toDateString()}
             </h1>
-            <h1 className="text-sm text-gray-400">edited</h1>
-            {/* {message.is_edit && ( */}
             {/* <h1 className="text-sm text-gray-400">edited</h1> */}
-            {/* )} */}
+            {message.is_edit && (
+              <h1 className="text-sm text-gray-400">edited</h1>
+            )}
           </div>
-          {/* {message.users?.id === user?.id && <MessageMenu message={message} />} */}
-          <MessageMenu message={message} />
+          {message.users?.id === user?.id && <MessageMenu message={message} />}
+          {/* <MessageMenu message={message} /> */}
         </div>
         <p className="text-gray-300">{message.text}</p>
       </div>

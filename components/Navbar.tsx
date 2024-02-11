@@ -3,7 +3,18 @@
 import { type User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { usePathname, useRouter } from "next/navigation";
-import { FunctionSquare, Menu, Settings } from "lucide-react";
+import {
+  BookMarked,
+  FunctionSquare,
+  GraduationCap,
+  Home,
+  Menu,
+  MessageSquareMore,
+  MessageSquareMoreIcon,
+  MusicIcon,
+  Settings,
+  VideoIcon,
+} from "lucide-react";
 import {
   DropdownItem,
   DropdownTrigger,
@@ -16,8 +27,11 @@ import {
   NavbarMenuToggle,
   NavbarMenu,
   NavbarMenuItem,
-  Button,
   Avatar,
+  Tab,
+  Chip,
+  Tabs,
+  AvatarIcon,
 } from "@nextui-org/react";
 import {
   ChevronDown,
@@ -27,14 +41,22 @@ import {
   Server,
   TagUser,
   Scale,
+  GalleryIcon,
+  AddNoteIcon,
 } from "./Icons";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { buttonVariants } from "./ui/button";
 
-const MyNavbar = () => {
-  const pathname = usePathname();
+const MyNavbar = ({ user }: { user: User | null }) => {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
+  const pathname = usePathname();
+
+  const iconClasses =
+    "text-xl text-default-500 pointer-events-none flex-shrink-0";
+
+  console.log(pathname);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -42,17 +64,27 @@ const MyNavbar = () => {
     router.refresh();
   };
 
-  useEffect(() => {
-    (async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.getUser();
-      setUser(data?.user);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const supabase = createClient();
+  //     const {
+  //       data: { user },
+  //       error,
+  //     } = await supabase.auth.getUser();
+  //     console.log(user === null);
+  //     setUser(user);
+  //   })();
+  // }, []);
 
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const menuItems = ["Home", "Materials", "Chat", "Settings", "Analytics"];
+  const menuItems = [
+    { href: "", name: "Home" },
+    { href: "materials", name: "Materials" },
+    { href: "chat", name: "Chat" },
+    { href: "settings", name: "Settings" },
+    { href: "analytics", name: "Analytics" },
+  ];
 
   const icons = {
     chevron: <ChevronDown fill="currentColor" size={16} />,
@@ -69,9 +101,9 @@ const MyNavbar = () => {
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
+      isMenuOpen={isMenuOpen}
       isBordered
       isBlurred={true}
-      // className="!max-w-7xl mx-auto"
       classNames={{
         item: [
           "flex",
@@ -95,59 +127,135 @@ const MyNavbar = () => {
           className="sm:hidden"
         />
         <NavbarBrand className="flex gap-2 justify-center items-center">
-          <FunctionSquare stroke="hsl(var(--primary))" />
+          <GraduationCap stroke="hsl(var(--primary))" />
           <h1 className="font-extrabold text-xl text-primary">SeniorSphere</h1>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem isActive={pathname == "/"}>
-          <Link href="/">Home</Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname == "/materials"}>
-          <Link href="/materials">Materials</Link>
-        </NavbarItem>
-        <NavbarItem isActive={pathname == "/chat"}>
-          <Link href="/chat">Chat</Link>
-        </NavbarItem>
+      <NavbarContent className="hidden sm:block" justify="center">
+        <Tabs
+          aria-label="Options"
+          color="primary"
+          variant="underlined"
+          selectedKey={
+            pathname.substring(1) === ""
+              ? "home"
+              : pathname.includes("materials")
+                ? "materials"
+                : pathname.substring(1) === "chat"
+                  ? "chat"
+                  : null
+          }
+          classNames={{
+            tabList:
+              "gap-5 w-full relative rounded-none p-0 flex items-stretch",
+            cursor: "w-full bg-primary",
+            tab: "max-w-fit p-0 h-fit",
+            tabContent:
+              "group-data-[selected=true]:text-primary h-[64px] flex justify-center items-stretch",
+          }}
+          isDisabled={user === null}
+        >
+          <Tab
+            key="home"
+            title={
+              <Link href="/" className="flex justify-center items-center">
+                <div className="flex items-center space-x-2">
+                  <Home />
+                  <NavbarItem>Home</NavbarItem>
+                  <Chip size="sm" variant="faded">
+                    9
+                  </Chip>
+                </div>
+              </Link>
+            }
+          />
+          <Tab
+            key="materials"
+            title={
+              <Link
+                href="/materials"
+                className="flex justify-center items-center"
+              >
+                <div className="flex items-center space-x-2">
+                  <BookMarked />
+                  <NavbarItem>Materials</NavbarItem>
+                  <Chip size="sm" variant="faded">
+                    3
+                  </Chip>
+                </div>
+              </Link>
+            }
+          />
+          <Tab
+            key="chat"
+            title={
+              <Link href="/chat" className="flex justify-center items-center">
+                <div className="flex items-center space-x-2">
+                  <MessageSquareMore />
+                  <NavbarItem>Chat</NavbarItem>
+                  <Chip size="sm" variant="faded">
+                    1
+                  </Chip>
+                </div>
+              </Link>
+            }
+          />
+        </Tabs>
       </NavbarContent>
+
       <NavbarContent justify="end">
-        <Dropdown placement="bottom-end" className="text-blue-500">
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="secondary"
-              name="Jason Hughes"
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold text-blue-500">Signed in as</p>
-              <p className="font-semibold">{user?.email}</p>
-            </DropdownItem>
-            <DropdownItem key="settings" className="p-0">
-              <Link href="/settings" className="block py-1.5 px-2 w-full">
-                Settings
-              </Link>
-            </DropdownItem>
-            <DropdownItem key="analytics" className="p-0">
-              <Link href="/analytics" className="block py-1.5 px-2 w-full">
-                Analytics
-              </Link>
-            </DropdownItem>
-            <DropdownItem key="logout" color="danger" onClick={handleLogout}>
-              Log Out
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        {user === null ? (
+          <Avatar
+            icon={<AvatarIcon />}
+            classNames={{
+              base: "bg-gradient-to-br from-primary/50 to-primary",
+              icon: "text-black/80",
+            }}
+            size="sm"
+          />
+        ) : (
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color="secondary"
+                name={user.user_metadata.name}
+                size="sm"
+                src={user.user_metadata.avatar_url}
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">{user?.email}</p>
+              </DropdownItem>
+              <DropdownItem key="settings" className="p-0">
+                <Link href="/settings" className="block py-1.5 px-2 w-full">
+                  Settings
+                </Link>
+              </DropdownItem>
+              <DropdownItem key="analytics" className="p-0">
+                <Link href="/analytics" className="block py-1.5 px-2 w-full">
+                  Analytics
+                </Link>
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
       </NavbarContent>
+
       <NavbarMenu>
         {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
+          <NavbarMenuItem
+            key={`${item}-${index}`}
+            onClick={() => setIsMenuOpen(false)}
+          >
             <Link
               color={
                 index === 2
@@ -156,10 +264,14 @@ const MyNavbar = () => {
                     ? "danger"
                     : "foreground"
               }
-              className="w-full"
-              href="#"
+              className={
+                buttonVariants({ variant: "ghost" }) +
+                "flex gap-2 w-full !justify-start !text-2xl"
+              }
+              href={`/${item.href}`}
             >
-              {item}
+              <AddNoteIcon className={iconClasses} />
+              {item.name}
             </Link>
           </NavbarMenuItem>
         ))}

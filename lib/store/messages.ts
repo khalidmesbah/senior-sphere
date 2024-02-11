@@ -1,4 +1,3 @@
-import { User } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { LIMIT_MESSAGE } from "../constant";
 
@@ -9,9 +8,10 @@ export type Imessage = {
   send_by: string;
   text: string;
   users: {
-    avatar_url: string;
+    avatar_url: string | null;
     created_at: string;
-    display_name: string;
+    display_name: string | null;
+    email: string | null;
     id: string;
   } | null;
 };

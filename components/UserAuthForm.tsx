@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { login, signup } from "@/components/Actions";
+import { login, signup } from "@/lib/supabase/actions";
 import {
   Tabs,
   Tab,
@@ -59,8 +59,8 @@ export default function LoginPage() {
   };
 
   return (
-    <Card className="max-w-full w-[340px] h-[489px]">
-      <CardBody className="overflow-hidden">
+    <Card className="max-w-full w-[340px] h-[489px] shadow-md shadow-primary">
+      <CardBody>
         <Tabs
           fullWidth
           size="md"
@@ -72,20 +72,26 @@ export default function LoginPage() {
             <div>
               <form className="flex flex-col gap-4">
                 <div>
-                  <p className="text-small text-center">Login with</p>
-                  <div className="flex flex-wrap justify-center items-center gap-2 py-2">
-                    <Button size="md" className="aspect-square rounded-full">
+                  <p className="text-small text-center mb-[7px]">Login with</p>
+                  <div className="flex flex-wrap justify-center items-center gap-2 p-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="aspect-square rounded-full"
+                    >
                       <Facebook />
                     </Button>
                     <Button
-                      size="md"
+                      variant="ghost"
+                      size="sm"
                       className="aspect-square rounded-full"
                       onClick={handleLoginWithGoogle}
                     >
                       <Google fill="hsl(var(--foreground))" />
                     </Button>
                     <Button
-                      size="md"
+                      variant="ghost"
+                      size="sm"
                       className="aspect-square rounded-full"
                       onClick={handleLoginWithGithub}
                     >
@@ -131,7 +137,17 @@ export default function LoginPage() {
                     Login
                   </Button>
                   <Separator color="primary" />
-                  <Button variant="faded" color="primary" className="mt-auto">
+                  <Button
+                    variant="faded"
+                    color="primary"
+                    className="mt-auto"
+                    onClick={() =>
+                      login({
+                        email: "viewer@example.com",
+                        password: "viewer",
+                      })
+                    }
+                  >
                     Continue as a guest
                   </Button>
                 </div>
@@ -225,6 +241,7 @@ export default function LoginPage() {
                         name: signUpName,
                         email: signUpEmail,
                         password: signUpPassword,
+                        passphrase: signUpPassphrase,
                       });
                     }}
                   >

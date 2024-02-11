@@ -9,11 +9,13 @@ export default async function ChatMessages() {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("messages")
     .select("*,users(*)")
     .range(0, LIMIT_MESSAGE)
     .order("created_at", { ascending: false });
+
+  console.log(data, error, "from ChatMessages");
 
   return (
     <Suspense fallback={"loading.."}>

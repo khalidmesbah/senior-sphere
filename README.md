@@ -44,4 +44,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [ ] change the theme
 - [ ] Add a matcher so the middleware doesn't run on routes that don't access Supabase.
 - [ ] look at the cards shadcn/ui (notifications and create project)
-- [ ]
+- [ ] fix github auth
+- [ ] add facebook auth
+- [ ] look for a better icon that represents a sphere

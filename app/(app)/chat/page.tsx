@@ -21,7 +21,7 @@ export default async function Page() {
     <>
       <div className="h-[calc(100vh_-_99px)] border rounded-md flex flex-col">
         <ChatHeader />
-        <ChatMessages />
+        {/* <ChatMessages /> */}
         <ChatInput />
       </div>
       <InitUser user={data.user} />

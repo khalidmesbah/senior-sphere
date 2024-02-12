@@ -4,83 +4,91 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { toast } from "sonner";
 
 export async function login(data: { email: string; password: string }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
+  const res = await supabase.auth.signInWithPassword({
+    email: data.email,
+    password: data.password,
+  });
 
-  const { data: res, error } = await supabase.auth.signInWithPassword(data);
   console.log(`------------------------> login`);
-  console.log(`trying with data,`, res);
-  console.log(`get the error, `, error);
+  console.log(`data: `, data);
+  console.log(`result: `, res);
   console.log(`<------------------------ login`);
 
-  if (error) {
-    redirect("/error");
-  }
-
-  revalidatePath("/", "layout");
-  redirect("/");
+  return res;
 }
 
-export async function signup(formData: {
+export async function signup(data: {
   name: string;
   email: string;
   password: string;
-  passphrase: string;
+  secretKey: string;
 }) {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data, error } = await supabase.auth.signUp({
-    email: formData.email,
-    password: formData.password,
+  const res = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
     options: {
       data: {
-        name: formData.name,
-        passphrase: formData.passphrase,
+        name: data.name,
+        secret_key: data.secretKey,
       },
     },
   });
 
   console.log(`------------------------> sign up`);
-  console.log(`trying with formData,`, formData);
-  console.log(`get the data,`, data);
-  console.log(`get the error, `, error);
+  console.log(`data: `, data);
+  console.log(`result: `, res);
   console.log(`<------------------------ sign up`);
 
-  if (error) {
-    redirect("/error");
-  }
-
-  revalidatePath("/", "layout");
-  redirect("/");
+  return res;
 }
 
-export const deleteUser = async (user_id: string) => {
+export const deleteUser = async (id: string) => {
   const cookieStore = cookies();
   const supabase = createClient(cookieStore);
 
-  const { data, error } = await supabase
-    .from("users")
-    .delete()
-    .eq("id", user_id);
+  const res = await supabase.from("profile").delete().eq("id", id);
 
   console.log(`------------------------> delete a user`);
-  console.log(`trying with an id,`, user_id);
-  console.log(`get the data,`, data);
-  console.log(`get the error, `, error?.message);
-  toast(error?.message);
+  console.log(`id: `, id);
+  console.log(`result: `, res);
   console.log(`<------------------------ delete a user`);
 
-  if (error) {
-    redirect("/error");
-  }
+  return res;
+};
 
+export const refresh = () => {
   revalidatePath("/", "layout");
   redirect("/");
+};
+
+export const updateUser = async (data: {
+  email?: string;
+  password?: string;
+  data?: {
+    name?: string;
+    avatar_url?: string;
+    secretKey?: string;
+  };
+}) => {
+  const cookieStore = cookies();
+  const supabase = createClient(cookieStore);
+
+  const res = await supabase.auth.updateUser({
+    data,
+  });
+
+  console.log(`------------------------> update a user`);
+  console.log(`data: `, data);
+  console.log(`result: `, res);
+  console.log(`<------------------------ update a user`);
+
+  return res;
 };

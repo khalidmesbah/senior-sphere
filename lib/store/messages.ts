@@ -7,12 +7,13 @@ export type Imessage = {
   is_edit: boolean;
   send_by: string;
   text: string;
-  users: {
+  profile: {
     avatar_url: string | null;
     created_at: string;
-    display_name: string | null;
-    email: string | null;
+    email: string;
     id: string;
+    name: string;
+    role: string;
   } | null;
 };
 

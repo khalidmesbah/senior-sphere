@@ -1,11 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,14 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { type User } from "@supabase/supabase-js";
 import { useEffect } from "react";
@@ -89,6 +78,7 @@ const profileFormSchema = z
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export function ProfileForm({ user }: { user: User }) {
+  const isGuest = user.email === process.env.GUEST_EMAIL;
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -103,6 +93,12 @@ export function ProfileForm({ user }: { user: User }) {
   });
 
   function onSubmit(data: ProfileFormValues) {
+    if (isGuest) {
+      toast.warning(
+        `As a guest you don't have the priviliges to do this action.`,
+      );
+      return;
+    }
     // updateAvatarURL();
     updateUsername();
     console.log(`khkfkdsjklfjdslakfjklasdjflakdsjflsadkjfkjdsalkfj`);
@@ -113,6 +109,12 @@ export function ProfileForm({ user }: { user: User }) {
   }
 
   const updateAvatarURL = async () => {
+    if (isGuest) {
+      toast.warning(
+        `As a guest you don't have the priviliges to do this action.`,
+      );
+      return;
+    }
     const supabase = createClient();
     const { data, error } = await supabase.auth.updateUser({
       data: { avatar_url: form.watch().avatar_url },
@@ -135,6 +137,12 @@ export function ProfileForm({ user }: { user: User }) {
   };
 
   const updateUsername = async () => {
+    if (isGuest) {
+      toast.warning(
+        `As a guest you don't have the priviliges to do this action.`,
+      );
+      return;
+    }
     const supabase = createClient();
     const { data, error } = await supabase.auth.updateUser({
       data: { name: form.watch().username },
@@ -157,6 +165,12 @@ export function ProfileForm({ user }: { user: User }) {
     );
   };
   const updateEmail = async () => {
+    if (isGuest) {
+      toast.warning(
+        `As a guest you don't have the priviliges to do this action.`,
+      );
+      return;
+    }
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.updateUser({
@@ -175,6 +189,12 @@ export function ProfileForm({ user }: { user: User }) {
   };
 
   const updatePassword = async () => {
+    if (isGuest) {
+      toast.warning(
+        `As a guest you don't have the priviliges to do this action.`,
+      );
+      return;
+    }
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.updateUser({
@@ -202,6 +222,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="username"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
@@ -220,6 +241,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="email"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
@@ -236,6 +258,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="current_password"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Current password</FormLabel>
@@ -256,6 +279,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="new_password"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>New password</FormLabel>
@@ -270,6 +294,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="confirm_new_password"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Current password</FormLabel>
@@ -290,6 +315,7 @@ export function ProfileForm({ user }: { user: User }) {
         <FormField
           control={form.control}
           name="avatar_url"
+          disabled={isGuest}
           render={({ field }) => (
             <FormItem>
               <FormLabel>URLs</FormLabel>
@@ -297,7 +323,11 @@ export function ProfileForm({ user }: { user: User }) {
                 Add links to your website, blog, or social media profiles.
               </FormDescription>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  placeholder="Enter the avatar url"
+                  type="text"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -305,7 +335,9 @@ export function ProfileForm({ user }: { user: User }) {
         />
         <Button onClick={updateAvatarURL}>update avatar url</Button>
         <Separator />
-        <Button type="submit">Update profile</Button>
+        <Button type="submit" disabled={isGuest}>
+          Update profile
+        </Button>
       </form>
     </Form>
   );

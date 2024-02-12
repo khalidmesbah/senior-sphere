@@ -9,7 +9,7 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      messages: {
+      message: {
         Row: {
           created_at: string
           id: string
@@ -31,95 +31,33 @@ export type Database = {
           send_by?: string
           text?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "messages_send_by_fkey"
-            columns: ["send_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      roles: {
-        Row: {
-          created_at: string
-          id: number
-          role_name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          role_name: string
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          role_name?: string
-        }
         Relationships: []
       }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: number
-          role_id: number | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          role_id?: number | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          role_id?: number | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_roles_role_id_fkey"
-            columns: ["role_id"]
-            isOneToOne: false
-            referencedRelation: "roles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_roles_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      users: {
+      profile: {
         Row: {
           avatar_url: string | null
-          created_at: string
-          display_name: string | null
-          email: string | null
+          email: string
           id: string
+          name: string
+          role: string
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
+          email: string
           id: string
+          name: string
+          role?: string
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
+          email?: string
           id?: string
+          name?: string
+          role?: string
         }
         Relationships: [
           {
-            foreignKeyName: "users_id_fkey"
+            foreignKeyName: "profile_id_fkey"
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"

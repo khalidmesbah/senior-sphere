@@ -47,3 +47,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [ ] fix github auth
 - [ ] add facebook auth
 - [ ] look for a better icon that represents a sphere
+- [ ] add a whiteboard
+- [ ] add fill in the blanks questions
+- [ ] change to seniors-sphere
+- [ ] add page animation

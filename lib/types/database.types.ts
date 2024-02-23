@@ -9,6 +9,41 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      material: {
+        Row: {
+          cover_image: string | null
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          name: string
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string
+          description: string
+          id?: string
+          name: string
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       message: {
         Row: {
           created_at: string
@@ -65,12 +100,49 @@ export type Database = {
           }
         ]
       }
+      quiz: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          questions: Json[]
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name: string
+          questions?: Json[]
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          questions?: Json[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profile"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      verify_user_password: {
+        Args: {
+          password: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

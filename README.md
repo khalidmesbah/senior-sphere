@@ -51,3 +51,6 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 - [ ] add fill in the blanks questions
 - [ ] change to seniors-sphere
 - [ ] add page animation
+- [ ] take notes as svgs (at the last stage of the project if i could)
+- [ ] rename handle action response
+- [ ] add a favicon

@@ -47,6 +47,8 @@ import {
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
+import { l } from "@/lib/utils";
+import { Input } from "@nextui-org/react";
 
 const MyNavbar = ({ user }: { user: User | null }) => {
   const router = useRouter();
@@ -55,8 +57,6 @@ const MyNavbar = ({ user }: { user: User | null }) => {
 
   const iconClasses =
     "text-xl text-default-500 pointer-events-none flex-shrink-0";
-
-  console.log(pathname);
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -71,7 +71,7 @@ const MyNavbar = ({ user }: { user: User | null }) => {
   //       data: { user },
   //       error,
   //     } = await supabase.auth.getUser();
-  //     console.log(user === null);
+  //     l(user === null);
   //     setUser(user);
   //   })();
   // }, []);
@@ -121,18 +121,22 @@ const MyNavbar = ({ user }: { user: User | null }) => {
         ],
       }}
     >
-      <NavbarContent>
+      <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
         <NavbarBrand className="flex gap-2 justify-center items-center">
           <GraduationCap stroke="hsl(var(--primary))" />
-          <h1 className="font-extrabold text-xl text-primary">SeniorSphere</h1>
+          <Link href={"/"}>
+            <h1 className="font-extrabold text-xl text-primary">
+              SeniorSphere
+            </h1>
+          </Link>
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:block" justify="center">
+      <NavbarContent className="hidden sm:block w-full " justify="center">
         <Tabs
           aria-label="Options"
           color="primary"
@@ -147,8 +151,8 @@ const MyNavbar = ({ user }: { user: User | null }) => {
                   : null
           }
           classNames={{
-            tabList:
-              "gap-5 w-full relative rounded-none p-0 flex items-stretch",
+            base: "w-full flex justify-center align-center",
+            tabList: "gap-5 relative rounded-none p-0 flex items-stretch",
             cursor: "w-full bg-primary",
             tab: "max-w-fit p-0 h-fit",
             tabContent:
@@ -221,7 +225,7 @@ const MyNavbar = ({ user }: { user: User | null }) => {
                 isBordered
                 as="button"
                 className="transition-transform"
-                color="secondary"
+                color="primary"
                 name={user.user_metadata.name}
                 size="sm"
                 src={user.user_metadata.avatar_url}

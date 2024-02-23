@@ -21,7 +21,7 @@ export default async function RootLayout({
       <body className={space_Grotesk.className}>
         <Providers>
           {children}
-          <Toaster position="top-center" />
+          <Toaster position="top-center" richColors />
         </Providers>
       </body>
     </html>

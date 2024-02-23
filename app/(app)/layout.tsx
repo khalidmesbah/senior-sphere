@@ -24,7 +24,7 @@ export default async function RootLayout({
   const supabase = createClient(cookieStore);
 
   const { data, error } = await supabase.auth.getUser();
-  console.log(data, error, "from RootLayout");
+  // l(data, error, "from RootLayout");
 
   // if (!error || data.user) {
   //   redirect("/login");
@@ -38,7 +38,7 @@ export default async function RootLayout({
           <div className="relative max-w-5xl mx-auto h-fit min-h-[calc(100vh_-_65px)] py-4 px-2">
             {children}
           </div>
-          <Toaster position="top-center" />
+          <Toaster position="top-center" richColors />
         </Providers>
       </body>
     </html>

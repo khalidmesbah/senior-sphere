@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { ProfileForm } from "./profile-form";
+import { ProfileForm } from "./ProfileForm";
 import { createClient } from "@/lib/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -8,6 +8,7 @@ import { UserIcon } from "lucide-react";
 import { deleteUser } from "@/lib/supabase/actions";
 import DeleteButton from "./DeleteButton";
 import ChangePrivileges from "./ChangePrivileges";
+import { l } from "@/lib/utils";
 
 export default async function SettingsProfilePage() {
   const cookieStore = cookies();
@@ -24,11 +25,10 @@ export default async function SettingsProfilePage() {
     .select("id, role")
     .eq("id", data.user.id);
 
-  console.log(roles);
-
   if (roles_error || !roles || !roles[0].role) {
     redirect("/login");
   }
+  const isGuest = data.user.email === process.env.NEXT_PUBLIC_GUEST_EMAIL;
 
   const role = roles[0].role as string;
 
@@ -36,7 +36,11 @@ export default async function SettingsProfilePage() {
     <div className="space-y-6">
       <div className="flex gap-2 justify-between items-center">
         <h3 className="text-lg font-medium">Profile</h3>
-        <ChangePrivileges currentRole={role} />
+        <ChangePrivileges
+          id={data.user.id}
+          currentRole={role}
+          isGuest={isGuest}
+        />
       </div>
       <span>
         Your are currently signed in as
@@ -47,7 +51,7 @@ export default async function SettingsProfilePage() {
       </Chip>
       <Separator />
       <ProfileForm user={data.user} />
-      {data.user.email === process.env.NEXT_PUBLIC_GUEST_EMAIL ? null : (
+      {isGuest ? null : (
         <>
           <Separator />
           <DeleteButton user_id={data.user.id} />

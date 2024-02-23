@@ -1,11 +1,12 @@
 import { Metadata } from "next";
 
 import { Separator } from "@/components/ui/separator";
-import { SidebarNav } from "./components/sidebar-nav";
+import { SidebarNav } from "./components/SidebarNav";
 
 export const metadata: Metadata = {
-  title: "Forms",
-  description: "Advanced form example using react-hook-form and Zod.",
+  title: "Settings",
+  description:
+    "Customize your user preferences, appearance, and notification settings to tailor your experience.",
 };
 
 const sidebarNavItems = [

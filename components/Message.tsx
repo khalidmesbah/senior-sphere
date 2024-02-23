@@ -12,10 +12,11 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { useUser } from "@/lib/store/user";
 import { Avatar } from "@nextui-org/react";
+import { l } from "@/lib/utils";
 
 export default function Message({ message }: { message: Imessage }) {
   const user = useUser((state) => state.user);
-  console.log(message, "from message");
+  l(message, "from message");
 
   return (
     <div className="flex gap-2">

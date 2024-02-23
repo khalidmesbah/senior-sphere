@@ -1,5 +1,6 @@
 "use client";
 
+import { l } from "@/lib/utils";
 import { Switch } from "@nextui-org/switch";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -11,7 +12,7 @@ export function ThemeSwitcher() {
 
   useEffect(() => {
     setMounted(true);
-    console.log(theme);
+    l(theme);
   }, []);
 
   if (!mounted) return null;

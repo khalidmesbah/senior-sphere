@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import InitMessages from "@/lib/store/InitMessages";
 import { LIMIT_MESSAGE } from "@/lib/constant";
 import { cookies } from "next/headers";
+import { l } from "@/lib/utils";
 
 export default async function ChatMessages() {
   const cookieStore = cookies();
@@ -15,7 +16,7 @@ export default async function ChatMessages() {
     .range(0, LIMIT_MESSAGE)
     .order("created_at", { ascending: false });
 
-  console.log(data, error, "from ChatMessages");
+  l(data, error, "from ChatMessages");
 
   return (
     <Suspense fallback={"loading.."}>

@@ -1,8 +1,8 @@
 "use client";
 
-import { toast } from "sonner";
 import { useState } from "react";
-import { login, refresh, signup } from "@/lib/supabase/actions";
+import { ActionResponse } from "@/lib/types/custom.type";
+import { login, signup } from "@/lib/supabase/actions";
 import {
   Tabs,
   Tab,
@@ -28,6 +28,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { handleActionResponse } from "@/lib/supabase/helpers";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [selected, setSelected] = useState<string>("login");
@@ -68,26 +70,8 @@ const loginFormSchema = z.object({
 type LoginFormValues = z.infer<typeof loginFormSchema>;
 
 const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
-  const handleLoginWithGithub = () => {
-    const supabase = createClient();
-    supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: {
-        redirectTo: location.origin + "/auth/callback",
-      },
-    });
-  };
-
-  const handleLoginWithGoogle = () => {
-    const supabase = createClient();
-    supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: location.origin + "/auth/callback",
-      },
-    });
-  };
-
+  const router = useRouter();
+  const supabase = createClient();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -98,24 +82,58 @@ const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    const res = await login({
-      email: data.email,
-      password: data.password,
-    });
-    if (res.error) {
-      toast.error(
-        `Your login attempt was unsuccessful. Please verify that the email and password entered are correct, and ensure that you are already signed in.`,
-      );
-      return;
-    }
-    refresh();
+    const res = await login(data);
+    router.replace("/");
+    handleActionResponse(res);
   };
 
-  const loginAsGuest = () => {
-    onSubmit({
-      email: "guest@example.com",
-      password: "guest",
+  const loginWithGithub = async (): Promise<ActionResponse> => {
+    const res = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: location.origin + "/auth/callback",
+      },
     });
+
+    if (res.error)
+      return { status: "error", message: `An error occured: ${res.error}` };
+
+    return {
+      status: "success",
+      message: `Welome again to Senoirs Sphere, MR. Anonymous!!`,
+    };
+  };
+
+  const loginWithGoogle = async (): Promise<ActionResponse> => {
+    const res = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: location.origin + "/auth/callback",
+      },
+    });
+
+    if (res.error)
+      return { status: "error", message: `An error occured: ${res.error}` };
+
+    return {
+      status: "success",
+      message: `Welome again to Senoirs Sphere, MR. Anonymous!!`,
+    };
+  };
+
+  const loginAsGuest = async (): Promise<ActionResponse> => {
+    const res = await supabase.auth.signInWithPassword({
+      email: process.env.NEXT_PUBLIC_GUEST_EMAIL!,
+      password: process.env.NEXT_PUBLIC_GUEST_PASSWORD!,
+    });
+
+    if (res.error)
+      return { status: "error", message: `An error occured: ${res.error}` };
+
+    return {
+      status: "success",
+      message: `Welome again to Senoirs Sphere, ${res.data.user.user_metadata.name}!!`,
+    };
   };
 
   return (
@@ -131,14 +149,7 @@ const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
               variant="ghost"
               size="sm"
               className="aspect-square rounded-full"
-            >
-              <Facebook />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="aspect-square rounded-full"
-              onClick={handleLoginWithGoogle}
+              onClick={loginWithGoogle}
             >
               <Google fill="hsl(var(--foreground))" />
             </Button>
@@ -146,7 +157,7 @@ const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
               variant="ghost"
               size="sm"
               className="aspect-square rounded-full"
-              onClick={handleLoginWithGithub}
+              onClick={loginWithGithub}
             >
               <Github />
             </Button>
@@ -172,7 +183,6 @@ const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="password"
@@ -199,7 +209,6 @@ const LoginForm = ({ goSignUp }: { goSignUp: () => void }) => {
             Sign up
           </Link>
         </p>
-
         <div className="flex flex-col gap-4 justify-end">
           <Button type="submit" fullWidth color="primary">
             Login
@@ -245,6 +254,7 @@ const signUpFormSchema = z.object({
 type SignUpFormValues = z.infer<typeof signUpFormSchema>;
 
 const SignUpForm = ({ goLogin }: { goLogin: () => void }) => {
+  const router = useRouter();
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
@@ -268,13 +278,8 @@ const SignUpForm = ({ goLogin }: { goLogin: () => void }) => {
       password: data.password,
       secretKey: data.secret_key as string,
     });
-    if (res.error) {
-      toast.error(
-        `Registration unsuccessful. Please ensure that all mandatory fields are accurately completed and adhere to the specified format.`,
-      );
-      return;
-    }
-    refresh();
+    router.replace("/");
+    handleActionResponse(res);
   };
 
   return (
